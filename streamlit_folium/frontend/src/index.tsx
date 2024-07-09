@@ -19,6 +19,7 @@ type GlobalData = {
   last_center: any
   last_feature_group: any
   last_layer_control: any
+  max_drawn_objects: number
 }
 
 declare global {
@@ -90,7 +91,6 @@ function extractContent(s: string) {
 
 function onDraw(e: any) {
   const global_data = window.__GLOBAL_DATA__
-
   var type = e.layerType,
     layer = e.layer
 
@@ -108,6 +108,13 @@ function onDraw(e: any) {
     global_data.last_circle_radius = radius / 1000 // Convert to km to match what UI shows
     global_data.last_circle_polygon = polygon
   }
+  // Get the number of drawn objects
+  console.log('number of drawn items', window.drawnItems.getLayers().length)
+  // destroy the oldest drawn object if max drawn object is set to any positive value not 0
+  if (window.drawnItems.getLayers().length > window.__GLOBAL_DATA__.max_drawn_objects && window.__GLOBAL_DATA__.max_drawn_objects !== 0) {
+    window.drawnItems.removeLayer(window.drawnItems.getLayers()[0])
+  }
+
   return onLayerClick(e)
 }
 
@@ -207,6 +214,7 @@ async function onRender(event: Event) {
   const return_on_hover: boolean = data.args["return_on_hover"]
   const layer_control: string = data.args["layer_control"]
   const pixelated: boolean = data.args["pixelated"]
+  const max_drawn_objects: number = data.args['max_drawn_objects']
 
   // load scripts
   const loadScripts = async () => {
@@ -233,7 +241,6 @@ async function onRender(event: Event) {
     style.innerHTML = getPixelatedStyles(pixelated)
     window.document.head.appendChild(style)
   }
-
   // finalize rendering
   const finalizeOnRender = () => {
     if (
@@ -254,6 +261,7 @@ async function onRender(event: Event) {
       // update feature group and layer control cache
       window.__GLOBAL_DATA__.last_feature_group = feature_group
       window.__GLOBAL_DATA__.last_layer_control = layer_control
+      window.__GLOBAL_DATA__.max_drawn_objects = max_drawn_objects
 
       if (feature_group) {
         // eslint-disable-next-line
@@ -285,7 +293,7 @@ async function onRender(event: Event) {
     if (
       center &&
       JSON.stringify(center) !==
-        JSON.stringify(window.__GLOBAL_DATA__.last_center)
+      JSON.stringify(window.__GLOBAL_DATA__.last_center)
     ) {
       new_center = center
       window.__GLOBAL_DATA__.last_center = center
@@ -339,6 +347,7 @@ async function onRender(event: Event) {
         last_center: null,
         last_feature_group: null,
         last_layer_control: null,
+        max_drawn_objects: max_drawn_objects,
       }
       if (script.indexOf("map_div2") !== -1) {
         parent_div?.classList.remove("single")

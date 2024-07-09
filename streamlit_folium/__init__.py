@@ -214,6 +214,7 @@ def st_folium(
     pixelated: bool = False,
     debug: bool = False,
     render: bool = True,
+    max_drawn_objects: int = 0,
 ):
     """Display a Folium object in Streamlit, returning data as user interacts
     with app.
@@ -416,6 +417,7 @@ def st_folium(
         pixelated=pixelated,
         css_links=css_links,
         js_links=js_links,
+        max_drawn_objects=max_drawn_objects,
     )
 
     return component_value

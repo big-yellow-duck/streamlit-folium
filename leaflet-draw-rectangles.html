@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Draw Rectangle from Coordinates</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <style>
+        #map {
+            height: 400px;
+            margin-bottom: 20px;
+        }
+
+        #coordinateForm {
+            margin-bottom: 20px;
+        }
+
+        input {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <form id="coordinateForm">
+        <label>Southwest Corner:</label>
+        <input type="number" id="swLat" step="any" placeholder="Latitude" required>
+        <input type="number" id="swLng" step="any" placeholder="Longitude" required>
+        <label>Northeast Corner:</label>
+        <input type="number" id="neLat" step="any" placeholder="Latitude" required>
+        <input type="number" id="neLng" step="any" placeholder="Longitude" required>
+        <button type="submit">Draw Rectangle</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([0, 0], 2);
+
+        // Add the base tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Initialize the FeatureGroup to store the editable layers
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        // Variable to store the current rectangle
+        var currentRectangle = null;
+
+        // Initialize the draw control and pass it the FeatureGroup of editable layers
+        var drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: drawnItems
+            },
+            draw: {
+                polygon: false,
+                polyline: false,
+                circle: false,
+                marker: false,
+                circlemarker: false,
+                rectangle: true
+            }
+        });
+        map.addControl(drawControl);
+
+        // Function to add a rectangle to the map
+        function addRectangle(bounds) {
+            // Remove the current rectangle if it exists
+            if (currentRectangle) {
+                drawnItems.removeLayer(currentRectangle);
+            }
+
+            // Create and add the new rectangle
+            currentRectangle = L.rectangle(bounds, { color: "#ff7800", weight: 1 });
+            drawnItems.addLayer(currentRectangle);
+
+            // Fit the map to the rectangle bounds
+            map.fitBounds(bounds);
+
+            console.log("New rectangle created:", bounds);
+        }
+
+        // Event handler for when a rectangle is created using the draw tool
+        map.on(L.Draw.Event.CREATED, function (event) {
+            addRectangle(event.layer.getBounds());
+        });
+
+        // Event handler for when a rectangle is edited
+        map.on(L.Draw.Event.EDITED, function (event) {
+            var layers = event.layers;
+            layers.eachLayer(function (layer) {
+                console.log("Rectangle edited:", layer.getBounds());
+            });
+        });
+
+        // Event handler for when a rectangle is deleted
+        map.on(L.Draw.Event.DELETED, function (event) {
+            currentRectangle = null;
+            console.log("Rectangle deleted");
+        });
+
+        // Handle form submission
+        document.getElementById('coordinateForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var swLat = parseFloat(document.getElementById('swLat').value);
+            var swLng = parseFloat(document.getElementById('swLng').value);
+            var neLat = parseFloat(document.getElementById('neLat').value);
+            var neLng = parseFloat(document.getElementById('neLng').value);
+
+            if (isNaN(swLat) || isNaN(swLng) || isNaN(neLat) || isNaN(neLng)) {
+                alert('Please enter valid coordinates');
+                return;
+            }
+
+            var bounds = L.latLngBounds([swLat, swLng], [neLat, neLng]);
+            addRectangle(bounds);
+        });
+    </script>
+</body>
+
+</html>
