@@ -19,6 +19,12 @@ When a shape is drawn on the map, the coordinates that represent that shape are 
 back as a geojson feature via the `all_drawings` and `last_active_drawing` data fields.
 
 Draw something below to see the return value back to Streamlit!
+
+You can specify the max drawn objects to limit the maximum number of features drawn on 
+the map.
+The oldest drawn item will be removed when you reach the limit.
+
+Set the limit to 0 for no limit.
 """
 
 with st.echo(code_location="below"):
@@ -29,15 +35,14 @@ with st.echo(code_location="below"):
     from streamlit_folium import st_folium
 
     m = folium.Map(location=[39.949610, -75.150282], zoom_start=5)
-    Draw(export=False).add_to(m)
+    Draw(export=True).add_to(m)
 
     c1, c2 = st.columns(2)
+
     with c1:
+        max_drawn_objects = st.number_input("max drawn objects", 0, 3, 0)
         output = st_folium(
-            m,
-            width=700,
-            height=500,
-            max_drawn_objects=2,
+            m, width=700, height=500, max_drawn_objects=max_drawn_objects
         )
 
     with c2:
