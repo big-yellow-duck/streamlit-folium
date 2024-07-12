@@ -109,7 +109,6 @@ function onDraw(e: any) {
     global_data.last_circle_polygon = polygon
   }
   // Get the number of drawn objects
-  console.log('number of drawn items', window.drawnItems.getLayers().length)
   // destroy the oldest drawn object if max drawn object is set to any positive value not 0
   if (window.drawnItems.getLayers().length > window.__GLOBAL_DATA__.max_drawn_objects && window.__GLOBAL_DATA__.max_drawn_objects !== 0) {
     window.drawnItems.removeLayer(window.drawnItems.getLayers()[0])
