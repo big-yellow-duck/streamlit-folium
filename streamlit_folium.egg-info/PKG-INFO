@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: streamlit_folium
-Version: 0.21.0
+Version: 0.21.1
 Summary: Render Folium objects in Streamlit
 Home-page: https://github.com/randyzwitch/streamlit-folium
 Author: Randy Zwitch

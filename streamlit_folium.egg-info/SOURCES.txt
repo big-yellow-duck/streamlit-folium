@@ -12,9 +12,9 @@ streamlit_folium.egg-info/top_level.txt
 streamlit_folium/frontend/build/asset-manifest.json
 streamlit_folium/frontend/build/bootstrap.min.css
 streamlit_folium/frontend/build/index.html
-streamlit_folium/frontend/build/static/js/main.72383160.js
-streamlit_folium/frontend/build/static/js/main.72383160.js.LICENSE.txt
-streamlit_folium/frontend/build/static/js/main.72383160.js.map
+streamlit_folium/frontend/build/static/js/main.942eb727.js
+streamlit_folium/frontend/build/static/js/main.942eb727.js.LICENSE.txt
+streamlit_folium/frontend/build/static/js/main.942eb727.js.map
 tests/test_frontend.py
 tests/test_package.py
 tests/test_release.py
