@@ -215,6 +215,7 @@ def st_folium(
     debug: bool = False,
     render: bool = True,
     max_drawn_objects: int = 0,
+    max_drawn_objects_remove_old: bool = True
 ):
     """Display a Folium object in Streamlit, returning data as user interacts
     with app.
@@ -267,6 +268,14 @@ def st_folium(
         Disabling this may improve performance as you can cache the rendering step.
         *Note* if this is disabled and the map is not rendered elsewhere the map
         will be missing attributes
+    max_drawn_objects: int
+        If not 0, this will limit the number of objects drawn on the map using the draw
+        tool, by default the oldest object will be removed when we hit the limit,
+        Set oldest or newest object or oldest object to delete using max_drawn_objects_remove_old
+    max_drawn_objects_remove_old:
+        If True, remove the oldest object drawn using the draw tool. If False, the newest
+        object drawn will be removed, preventing the user from adding more draw objects 
+        to the map. Only works then max_drawn_objects is not 0
     Returns
     -------
     dict
@@ -418,6 +427,7 @@ def st_folium(
         css_links=css_links,
         js_links=js_links,
         max_drawn_objects=max_drawn_objects,
+        max_drawn_objects_remove_old=max_drawn_objects_remove_old,
     )
 
     return component_value

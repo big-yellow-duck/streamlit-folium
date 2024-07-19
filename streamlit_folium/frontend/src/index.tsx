@@ -20,6 +20,7 @@ type GlobalData = {
   last_feature_group: any
   last_layer_control: any
   max_drawn_objects: number
+  max_drawn_objects_remove_old: boolean
 }
 
 declare global {
@@ -111,7 +112,12 @@ function onDraw(e: any) {
   // Get the number of drawn objects
   // destroy the oldest drawn object if max drawn object is set to any positive value not 0
   if (window.drawnItems.getLayers().length > window.__GLOBAL_DATA__.max_drawn_objects && window.__GLOBAL_DATA__.max_drawn_objects !== 0) {
-    window.drawnItems.removeLayer(window.drawnItems.getLayers()[0])
+    if (window.__GLOBAL_DATA__.max_drawn_objects_remove_old) {
+      window.drawnItems.removeLayer(window.drawnItems.getLayers()[0])
+    } else {
+      window.drawnItems.removeLayer(window.drawnItems.getLayers()[window.drawnItems.getLayers().length -1])
+      
+    }
   }
 
   return onLayerClick(e)
@@ -214,6 +220,7 @@ async function onRender(event: Event) {
   const layer_control: string = data.args["layer_control"]
   const pixelated: boolean = data.args["pixelated"]
   const max_drawn_objects: number = data.args['max_drawn_objects']
+  const max_drawn_objects_remove_old: boolean = data.args['max_drawn_object_remove_old']
 
   // load scripts
   const loadScripts = async () => {
@@ -347,6 +354,7 @@ async function onRender(event: Event) {
         last_feature_group: null,
         last_layer_control: null,
         max_drawn_objects: max_drawn_objects,
+        max_drawn_objects_remove_old: max_drawn_objects_remove_old
       }
       if (script.indexOf("map_div2") !== -1) {
         parent_div?.classList.remove("single")
