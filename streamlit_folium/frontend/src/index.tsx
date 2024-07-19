@@ -148,6 +148,9 @@ function onLayerClick(e: any) {
   }
   global_data.all_drawings = details
   debouncedUpdateComponentValue(window.map)
+  
+  //check the current layers
+  // console.log('current window layers: ', window.drawnItems)
 }
 
 function getPixelatedStyles(pixelated: boolean) {
