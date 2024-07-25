@@ -24,7 +24,8 @@ You can specify the max drawn objects to limit the maximum number of features dr
 the map.
 The oldest drawn item will be removed when you reach the limit.
 
-You can now set the keep items on map function to maintain a minimum number of drawn items
+You can now set the keep items on map function to maintain a minimum number of drawn
+items
 on the map even after deleting them.
 
 by default will keep the oldest item drawn on the map when using "Clear all"
