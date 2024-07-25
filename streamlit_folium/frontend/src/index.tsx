@@ -21,6 +21,8 @@ type GlobalData = {
   last_layer_control: any
   max_drawn_objects: number
   max_drawn_objects_remove_old: boolean
+  drawn_objects_at_delete_start: number
+  keep_items_on_map: number
 }
 
 declare global {
@@ -111,15 +113,64 @@ function onDraw(e: any) {
   }
   // Get the number of drawn objects
   // destroy the oldest drawn object if max drawn object is set to any positive value not 0
+  console.log('draw event e: ', e)
   if (window.drawnItems.getLayers().length > window.__GLOBAL_DATA__.max_drawn_objects && window.__GLOBAL_DATA__.max_drawn_objects !== 0) {
     if (window.__GLOBAL_DATA__.max_drawn_objects_remove_old) {
       window.drawnItems.removeLayer(window.drawnItems.getLayers()[0])
     } else {
-      window.drawnItems.removeLayer(window.drawnItems.getLayers()[window.drawnItems.getLayers().length -1])
+      window.drawnItems.removeLayer(window.drawnItems.getLayers()[window.drawnItems.getLayers().length - 1])
 
     }
   }
 
+  // let  window.__GLOBAL_DATA__.drawn_objects_at_delete_start = 0
+  if (e.type === 'draw:deletestart') {
+    window.__GLOBAL_DATA__.drawn_objects_at_delete_start = window.drawnItems.getLayers().length
+  }
+
+  if (e.type === 'draw:deleted') {
+    console.log('delete event layers: ', e.layers.getLayers())
+
+    // const window.__GLOBAL_DATA__.keep_items_on_map = 1
+    if (window.__GLOBAL_DATA__.drawn_objects_at_delete_start <= window.__GLOBAL_DATA__.keep_items_on_map) {
+      e.layers.getLayers().forEach((deletedLayer: any) => {
+        console.log('putting back: ', deletedLayer)
+        window.drawnItems.addLayer(deletedLayer)
+      })
+    } else {
+
+      let i = 0
+      while (window.drawnItems.getLayers().length < window.__GLOBAL_DATA__.keep_items_on_map) {
+        window.drawnItems.addLayer(e.layers.getLayers()[i])
+        i++
+      }
+    }
+    // if (window.drawnItems.getLayers().length - e.layers.getLayers().length < keepNumber
+    //   &&  window.__GLOBAL_DATA__.drawn_objects_at_delete_start > keepNumber
+    // ) {
+
+    //   // e.layers.getLayers().forEach((drawnItem: any) =>{
+    //   //   console.log('put back: ', drawnItem)
+    //   //   window.drawnItems.addLayer(drawnItem) 
+    //   // })
+    //   let i = 0
+    //   while (window.drawnItems.getLayers().length < keepNumber) {
+    //     console.log('put back: ', e.layers.getLayers()[i])
+    //     window.drawnItems.addLayer(e.layers.getLayers()[i])
+    //     i++
+    //   }
+    //   // for (let i = 0; i < keepNumber; i++) {
+    //   //   // console.log('put back: ', e.layers.getLayers())
+    //   //   // window.drawnItems.addLayer(e.layers.getLayers())
+    //   //   console.log('put index', i)
+    //   // }
+    //   // console.log('put back: ', e.layers.getLayers())
+    //   // window.drawnItems.addLayer(e.layers.getLayers()[0])
+    //   console.log('after adding back length: ', window.drawnItems.getLayers().length)
+
+    //   // window.drawnItems.addLayer(e.layers.getLayers()[1])
+    // }
+  }
   return onLayerClick(e)
 }
 
@@ -191,7 +242,7 @@ window.initComponent = (map: any, return_on_hover: boolean) => {
   map.on("draw:created", onDraw)
   map.on("draw:edited", onDraw)
   map.on("draw:deleted", onDraw)
-
+  map.on('draw:deletestart', onDraw)
   Streamlit.setFrameHeight()
   updateComponentValue(map)
 }
@@ -221,6 +272,7 @@ async function onRender(event: Event) {
   const pixelated: boolean = data.args["pixelated"]
   const max_drawn_objects: number = data.args['max_drawn_objects']
   const max_drawn_objects_remove_old: boolean = data.args['max_drawn_object_remove_old']
+  const keep_items_on_map: number = data.args['keep_items_on_map']
 
   // load scripts
   const loadScripts = async () => {
@@ -354,7 +406,9 @@ async function onRender(event: Event) {
         last_feature_group: null,
         last_layer_control: null,
         max_drawn_objects: max_drawn_objects,
-        max_drawn_objects_remove_old: max_drawn_objects_remove_old
+        max_drawn_objects_remove_old: max_drawn_objects_remove_old,
+        drawn_objects_at_delete_start: 0,
+        keep_items_on_map: keep_items_on_map
       }
       if (script.indexOf("map_div2") !== -1) {
         parent_div?.classList.remove("single")

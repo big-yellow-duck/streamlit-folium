@@ -24,6 +24,11 @@ You can specify the max drawn objects to limit the maximum number of features dr
 the map.
 The oldest drawn item will be removed when you reach the limit.
 
+You can now set the keep items on map function to maintain a minimum number of drawn items
+on the map even after deleting them.
+
+by default will keep the oldest item drawn on the map when using "Clear all"
+
 Set the limit to 0 for no limit.
 """
 
@@ -41,8 +46,13 @@ with st.echo(code_location="below"):
 
     with c1:
         max_drawn_objects = st.number_input("max drawn objects", 0, 3, 0)
+        keep_items_on_map = st.number_input("keep items on map", 0, 3, 0)
         output = st_folium(
-            m, width=700, height=500, max_drawn_objects=max_drawn_objects
+            m,
+            width=700,
+            height=500,
+            max_drawn_objects=max_drawn_objects,
+            keep_items_on_map=keep_items_on_map,
         )
 
     with c2:

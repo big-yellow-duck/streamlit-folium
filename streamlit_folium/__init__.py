@@ -216,6 +216,7 @@ def st_folium(
     render: bool = True,
     max_drawn_objects: int = 0,
     max_drawn_objects_remove_old: bool = True,
+    keep_items_on_map: int =0
 ):
     """Display a Folium object in Streamlit, returning data as user interacts
     with app.
@@ -278,6 +279,9 @@ def st_folium(
         newest
         object drawn will be removed, preventing the user from adding more draw objects
         to the map. Only works then max_drawn_objects is not 0
+    keep_items_on_map: int
+        Set the minimum number of drawn items that should persist after using Delete layers
+        in Leaflet.Draw. when using "Clear All" the oldest drawn objects are preserved
     Returns
     -------
     dict
@@ -415,7 +419,7 @@ def st_folium(
         script=leaflet,
         html=html,
         id=m_id,
-        key=generate_js_hash(leaflet, f"{key}_{max_drawn_objects}", return_on_hover),
+        key=generate_js_hash(leaflet, f"{key}_{max_drawn_objects}_{keep_items_on_map}", return_on_hover),
         height=height,
         width=width,
         returned_objects=returned_objects,
@@ -430,6 +434,7 @@ def st_folium(
         js_links=js_links,
         max_drawn_objects=max_drawn_objects,
         max_drawn_objects_remove_old=max_drawn_objects_remove_old,
+        keep_items_on_map=keep_items_on_map,
     )
 
     return component_value
