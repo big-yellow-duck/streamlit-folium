@@ -20,7 +20,7 @@ back as a geojson feature via the `all_drawings` and `last_active_drawing` data 
 
 Draw something below to see the return value back to Streamlit!
 
-You can specify the max drawn objects to limit the maximum number of features drawn on 
+You can specify the max drawn objects to limit the maximum number of features drawn on
 the map.
 The oldest drawn item will be removed when you reach the limit.
 

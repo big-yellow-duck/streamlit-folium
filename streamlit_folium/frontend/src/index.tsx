@@ -116,7 +116,7 @@ function onDraw(e: any) {
       window.drawnItems.removeLayer(window.drawnItems.getLayers()[0])
     } else {
       window.drawnItems.removeLayer(window.drawnItems.getLayers()[window.drawnItems.getLayers().length -1])
-      
+
     }
   }
 
