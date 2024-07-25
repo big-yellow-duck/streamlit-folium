@@ -113,7 +113,6 @@ function onDraw(e: any) {
   }
   // Get the number of drawn objects
   // destroy the oldest drawn object if max drawn object is set to any positive value not 0
-  console.log('draw event e: ', e)
   if (window.drawnItems.getLayers().length > window.__GLOBAL_DATA__.max_drawn_objects && window.__GLOBAL_DATA__.max_drawn_objects !== 0) {
     if (window.__GLOBAL_DATA__.max_drawn_objects_remove_old) {
       window.drawnItems.removeLayer(window.drawnItems.getLayers()[0])
@@ -129,9 +128,7 @@ function onDraw(e: any) {
   }
 
   if (e.type === 'draw:deleted') {
-    console.log('delete event layers: ', e.layers.getLayers())
 
-    // const window.__GLOBAL_DATA__.keep_items_on_map = 1
     if (window.__GLOBAL_DATA__.drawn_objects_at_delete_start <= window.__GLOBAL_DATA__.keep_items_on_map) {
       e.layers.getLayers().forEach((deletedLayer: any) => {
         console.log('putting back: ', deletedLayer)
@@ -145,31 +142,6 @@ function onDraw(e: any) {
         i++
       }
     }
-    // if (window.drawnItems.getLayers().length - e.layers.getLayers().length < keepNumber
-    //   &&  window.__GLOBAL_DATA__.drawn_objects_at_delete_start > keepNumber
-    // ) {
-
-    //   // e.layers.getLayers().forEach((drawnItem: any) =>{
-    //   //   console.log('put back: ', drawnItem)
-    //   //   window.drawnItems.addLayer(drawnItem) 
-    //   // })
-    //   let i = 0
-    //   while (window.drawnItems.getLayers().length < keepNumber) {
-    //     console.log('put back: ', e.layers.getLayers()[i])
-    //     window.drawnItems.addLayer(e.layers.getLayers()[i])
-    //     i++
-    //   }
-    //   // for (let i = 0; i < keepNumber; i++) {
-    //   //   // console.log('put back: ', e.layers.getLayers())
-    //   //   // window.drawnItems.addLayer(e.layers.getLayers())
-    //   //   console.log('put index', i)
-    //   // }
-    //   // console.log('put back: ', e.layers.getLayers())
-    //   // window.drawnItems.addLayer(e.layers.getLayers()[0])
-    //   console.log('after adding back length: ', window.drawnItems.getLayers().length)
-
-    //   // window.drawnItems.addLayer(e.layers.getLayers()[1])
-    // }
   }
   return onLayerClick(e)
 }
